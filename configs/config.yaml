@@ -3,12 +3,15 @@ model:
   channels: 32
   hidden_dim: 128
   num_layers: 2
-  dropout: 0.1
-  lr: 1e-3
+  dropout: 0.15
+  lr: 3e-3
+  weight_decay: 1e-4
+  optimizer: adamw
+  scheduler: cosine
 
 training:
-  max_epochs: 10
-  batch_size: 64
+  max_epochs: 15
+  batch_size: 128
 
 wandb:
   project: "mnist-autoresearch"

@@ -88,4 +88,20 @@ class MNISTModel(pl.LightningModule):
         self.log("val_acc", acc, prog_bar=True)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.cfg.lr)
+        opt_name = getattr(self.cfg, "optimizer", "adam")
+        weight_decay = float(getattr(self.cfg, "weight_decay", 0.0))
+        lr = float(self.cfg.lr)
+
+        if opt_name == "adamw":
+            optimizer = torch.optim.AdamW(self.parameters(), lr=lr, weight_decay=weight_decay)
+        else:
+            optimizer = torch.optim.Adam(self.parameters(), lr=lr)
+
+        scheduler_name = getattr(self.cfg, "scheduler", None)
+        if scheduler_name == "cosine":
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+                optimizer, T_max=self.trainer.max_epochs,
+            )
+            return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "interval": "epoch"}}
+
+        return optimizer
