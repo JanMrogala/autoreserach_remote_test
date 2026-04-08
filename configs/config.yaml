@@ -1,12 +1,14 @@
 model:
-  hidden_dim: 256
-  num_layers: 3
-  dropout: 0.05
-  lr: 5e-4
+  arch: cnn
+  channels: 32
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.1
+  lr: 1e-3
 
 training:
   max_epochs: 10
-  batch_size: 128
+  batch_size: 64
 
 wandb:
   project: "mnist-autoresearch"
