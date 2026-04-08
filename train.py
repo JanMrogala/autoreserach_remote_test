@@ -1,5 +1,6 @@
 import hydra
-from omegaconf import DictConfig
+import wandb
+from omegaconf import DictConfig, OmegaConf
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader
@@ -26,6 +27,7 @@ def main(cfg: DictConfig):
     logger = WandbLogger(
         project=cfg.wandb.project,
         entity=cfg.wandb.entity,
+        config=OmegaConf.to_container(cfg, resolve=True),
         log_model=False,
     )
 
@@ -37,6 +39,19 @@ def main(cfg: DictConfig):
     )
 
     trainer.fit(model, train_loader, val_loader)
+
+    # Save code/config as W&B artifacts (Bug fix: was missing)
+    if "save_artifacts" in cfg:
+        artifact = wandb.Artifact(f"experiment-{wandb.run.id}", type="code")
+        for path in cfg.save_artifacts:
+            try:
+                artifact.add_file(path)
+            except Exception as e:
+                print(f"Warning: could not save {path}: {e}")
+        wandb.log_artifact(artifact)
+
+    # Ensure W&B run is marked complete (Bug fix: was missing)
+    wandb.finish()
 
 
 if __name__ == "__main__":

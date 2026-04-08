@@ -11,3 +11,8 @@ training:
 wandb:
   project: "mnist-autoresearch"
   entity: null
+
+save_artifacts:
+  - "configs/config.yaml"
+  - "model.py"
+  - "train.py"
