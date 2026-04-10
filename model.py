@@ -44,4 +44,4 @@ class MNISTModel(pl.LightningModule):
         self.log("val_acc", acc, prog_bar=True)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.cfg.lr)
+        return torch.optim.Adam(self.parameters(), lr=float(self.cfg.lr))

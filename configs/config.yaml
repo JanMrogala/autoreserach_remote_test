@@ -9,5 +9,10 @@ training:
   batch_size: 64
 
 wandb:
-  project: "mnist-autoresearch"
-  entity: null
+  project: ${oc.env:WANDB_PROJECT,mnist-autoresearch}
+  entity: ${oc.env:WANDB_ENTITY,null}
+
+save_artifacts:
+  - "configs/config.yaml"
+  - "model.py"
+  - "train.py"
